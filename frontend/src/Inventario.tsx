@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { api, type Usuario } from './api'
+import FormularioMovimiento, { type Almacen } from './FormularioMovimiento'
 import FormularioProducto, { type Categoria } from './FormularioProducto'
 
 type Producto = {
@@ -20,16 +21,21 @@ type Pagina = {
   total: number
 }
 
+type FilaStock = { producto_id: number; stock: number }
+
 export default function Inventario() {
   const usuario = useOutletContext<Usuario>()
   const puedeEditar = usuario.role === 'administrador' || usuario.role === 'almacen'
 
   const [pagina, setPagina] = useState<Pagina | null>(null)
+  const [stock, setStock] = useState<FilaStock[]>([])
   const [categorias, setCategorias] = useState<Categoria[]>([])
+  const [almacenes, setAlmacenes] = useState<Almacen[]>([])
   const [buscar, setBuscar] = useState('')
   const [numero, setNumero] = useState(1)
   const [recarga, setRecarga] = useState(0)
   const [mostrarForm, setMostrarForm] = useState(false)
+  const [productoMovimiento, setProductoMovimiento] = useState<Producto | null>(null)
   const [error, setError] = useState('')
 
   useEffect(() => {
@@ -39,11 +45,23 @@ export default function Inventario() {
   }, [numero, buscar, recarga])
 
   useEffect(() => {
+    api<FilaStock[]>('/stock').then(setStock).catch(() => {})
+  }, [recarga])
+
+  useEffect(() => {
     api<Categoria[]>('/categorias').then(setCategorias).catch(() => {})
+    api<Almacen[]>('/almacenes').then(setAlmacenes).catch(() => {})
   }, [])
+
+  function stockTotal(productoId: number) {
+    return stock
+      .filter((fila) => fila.producto_id === productoId)
+      .reduce((suma, fila) => suma + fila.stock, 0)
+  }
 
   function guardado() {
     setMostrarForm(false)
+    setProductoMovimiento(null)
     setRecarga((n) => n + 1)
   }
 
@@ -61,7 +79,13 @@ export default function Inventario() {
           }}
         />
         {puedeEditar && (
-          <button className="boton" onClick={() => setMostrarForm(true)}>
+          <button
+            className="boton"
+            onClick={() => {
+              setProductoMovimiento(null)
+              setMostrarForm(true)
+            }}
+          >
             + Nuevo producto
           </button>
         )}
@@ -75,6 +99,15 @@ export default function Inventario() {
         />
       )}
 
+      {productoMovimiento && (
+        <FormularioMovimiento
+          producto={productoMovimiento}
+          almacenes={almacenes}
+          alGuardar={guardado}
+          alCancelar={() => setProductoMovimiento(null)}
+        />
+      )}
+
       {error && <p className="error">{error}</p>}
 
       <table className="tabla">
@@ -84,21 +117,47 @@ export default function Inventario() {
             <th>SKU</th>
             <th>Categoría</th>
             <th>Precio</th>
+            <th>Stock</th>
             <th>Mínimo</th>
+            <th>Estado</th>
+            {puedeEditar && <th></th>}
           </tr>
         </thead>
         <tbody>
-          {pagina?.data.map((p) => (
-            <tr key={p.id}>
-              <td>{p.nombre}</td>
-              <td>{p.sku}</td>
-              <td>{p.categoria?.nombre ?? '—'}</td>
-              <td>{p.precio}</td>
-              <td>{p.stock_minimo}</td>
-            </tr>
-          ))}
+          {pagina?.data.map((p) => {
+            const total = stockTotal(p.id)
+            const bajo = total < p.stock_minimo
+
+            return (
+              <tr key={p.id}>
+                <td>{p.nombre}</td>
+                <td>{p.sku}</td>
+                <td>{p.categoria?.nombre ?? '—'}</td>
+                <td>{p.precio}</td>
+                <td>{total}</td>
+                <td>{p.stock_minimo}</td>
+                <td>
+                  <span className={bajo ? 'estado estado-bajo' : 'estado estado-ok'}>
+                    {bajo ? 'Bajo mínimo' : 'OK'}
+                  </span>
+                </td>
+                {puedeEditar && (
+                  <td>
+                    <button
+                      onClick={() => {
+                        setMostrarForm(false)
+                        setProductoMovimiento(p)
+                      }}
+                    >
+                      Movimiento
+                    </button>
+                  </td>
+                )}
+              </tr>
+            )
+          })}
           {pagina && pagina.data.length === 0 && (
-            <tr><td colSpan={5}>No hay productos.</td></tr>
+            <tr><td colSpan={8}>No hay productos.</td></tr>
           )}
         </tbody>
       </table>

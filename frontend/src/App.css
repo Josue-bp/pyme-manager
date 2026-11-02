@@ -159,3 +159,20 @@
   gap: 12px;
   margin-top: 16px;
 }
+.estado {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.estado-bajo {
+  background: rgba(220, 38, 38, 0.15);
+  color: #dc2626;
+}
+
+.estado-ok {
+  background: rgba(22, 163, 74, 0.15);
+  color: #16a34a;
+}
