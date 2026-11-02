@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class VentaController extends Controller
 {
@@ -114,5 +115,14 @@ class VentaController extends Controller
             $venta->load(['cliente', 'usuario:id,name', 'almacen:id,nombre', 'items.producto:id,sku,nombre']),
             201
         );
+    
+    public function comprobante(Venta $venta)
+    {
+        $venta->load(['cliente', 'usuario:id,name', 'almacen:id,nombre', 'items.producto:id,sku,nombre']);
+
+        return Pdf::loadView('comprobante', ['venta' => $venta])
+            ->download("comprobante-{$venta->numero}.pdf");
     }
+    }
+
 }

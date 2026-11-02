@@ -64,6 +64,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/ventas', [VentaController::class, 'index']);
         Route::get('/ventas/{venta}', [VentaController::class, 'show']);
         Route::post('/ventas', [VentaController::class, 'store']);
+        Route::get('/ventas/{venta}/comprobante', [VentaController::class, 'comprobante']);
     });
 
     // Solo administrador
