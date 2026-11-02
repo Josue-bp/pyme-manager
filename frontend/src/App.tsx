@@ -1,27 +1,44 @@
 import { useEffect, useState } from 'react'
-
-type Ping = { mensaje: string; hora: string }
+import { api, borrarToken, obtenerToken, type Usuario } from './api'
+import Login from './Login'
+import './App.css'
 
 function App() {
-  const [data, setData] = useState<Ping | null>(null)
-  const [error, setError] = useState(false)
+  const [usuario, setUsuario] = useState<Usuario | null>(null)
+  const [cargando, setCargando] = useState(Boolean(obtenerToken()))
 
+  // Si ya había un token guardado, comprueba que siga siendo válido
   useEffect(() => {
-    fetch('/api/ping')
-      .then((res) => {
-        if (!res.ok) throw new Error('Error de API')
-        return res.json()
-      })
-      .then(setData)
-      .catch(() => setError(true))
+    if (!obtenerToken()) return
+
+    api<Usuario>('/me')
+      .then(setUsuario)
+      .catch(() => borrarToken())
+      .finally(() => setCargando(false))
   }, [])
 
+  async function cerrarSesion() {
+    try {
+      await api('/logout', { method: 'POST' })
+    } finally {
+      borrarToken()
+      setUsuario(null)
+    }
+  }
+
+  if (cargando) return <main className="pantalla"><p>Cargando…</p></main>
+
   return (
-    <main>
-      <h1>PyME Manager</h1>
-      {error && <p>No se pudo conectar con la API</p>}
-      {data && <p>{data.mensaje}</p>}
-      {!error && !data && <p>Conectando…</p>}
+    <main className="pantalla">
+      {usuario ? (
+        <section className="tarjeta">
+          <h1>Hola, {usuario.name}</h1>
+          <p>Rol: <strong>{usuario.role}</strong></p>
+          <button onClick={cerrarSesion}>Cerrar sesión</button>
+        </section>
+      ) : (
+        <Login alIniciarSesion={setUsuario} />
+      )}
     </main>
   )
 }
