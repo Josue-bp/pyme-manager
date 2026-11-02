@@ -7,6 +7,8 @@ import Pagina from './Pagina'
 import './App.css'
 import Inventario from './Inventario'
 import Movimientos from './Movimientos'
+import Clientes from './Clientes'
+
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(Boolean(obtenerToken()))
@@ -49,6 +51,7 @@ return (
       <Route path="/rrhh" element={<Pagina titulo="RRHH" />} />
       <Route path="*" element={<Navigate to="/inventario" replace />} />
       <Route path="/movimientos" element={<Movimientos />} />
+      <Route path="/clientes" element={<Clientes />} />
     </Route>
   </Routes>
 )

@@ -17,6 +17,7 @@ export default function Layout({ usuario, alCerrarSesion }: Props) {
           <NavLink to="/compras">Compras</NavLink>
           <NavLink to="/rrhh">RRHH</NavLink>
           <NavLink to="/movimientos">Movimientos</NavLink>
+          <NavLink to="/clientes">Clientes</NavLink>
         </nav>
 
         <div className="menu-usuario">
