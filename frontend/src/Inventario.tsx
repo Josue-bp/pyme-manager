@@ -3,7 +3,7 @@ import { useOutletContext } from 'react-router-dom'
 import { api, type Usuario } from './api'
 import FormularioMovimiento, { type Almacen } from './FormularioMovimiento'
 import FormularioProducto, { type Categoria } from './FormularioProducto'
-
+import TarjetasResumen from './TarjetasResumen'
 type Producto = {
   id: number
   sku: string
@@ -68,7 +68,7 @@ export default function Inventario() {
   return (
     <>
       <h1>Inventario</h1>
-
+      <TarjetasResumen recarga={recarga} />
       <div className="barra">
         <input
           placeholder="Buscar por nombre o SKU…"

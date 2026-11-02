@@ -6,6 +6,7 @@ export type Usuario = {
   email: string
   role: string
 }
+export const MONEDA = 'S/'
 
 export const guardarToken = (token: string) => localStorage.setItem(TOKEN_KEY, token)
 export const obtenerToken = () => localStorage.getItem(TOKEN_KEY)

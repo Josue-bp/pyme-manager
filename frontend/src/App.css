@@ -176,3 +176,34 @@
   background: rgba(22, 163, 74, 0.15);
   color: #16a34a;
 }
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px;
+  border: 1px solid #8884;
+  border-radius: 12px;
+}
+
+.dato strong {
+  font-size: 1.8rem;
+}
+
+.dato small {
+  opacity: 0.7;
+}
+
+.texto-rojo {
+  color: #dc2626;
+}
+
+.texto-verde {
+  color: #16a34a;
+}
