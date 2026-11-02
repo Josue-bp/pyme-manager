@@ -212,3 +212,30 @@
   border-radius: 8px;
   font-size: 1rem;
 }
+.venta {
+  max-width: 640px;
+}
+
+.linea {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.linea select {
+  flex: 1;
+}
+
+.linea input {
+  width: 90px;
+  padding: 10px;
+  border: 1px solid #8886;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.total {
+  margin: 0;
+  font-size: 1.2rem;
+}

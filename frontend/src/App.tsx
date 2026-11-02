@@ -8,6 +8,7 @@ import './App.css'
 import Inventario from './Inventario'
 import Movimientos from './Movimientos'
 import Clientes from './Clientes'
+import Ventas from './Ventas'
 
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
@@ -52,6 +53,7 @@ return (
       <Route path="*" element={<Navigate to="/inventario" replace />} />
       <Route path="/movimientos" element={<Movimientos />} />
       <Route path="/clientes" element={<Clientes />} />
+      <Route path="/ventas" element={<Ventas />} />
     </Route>
   </Routes>
 )
