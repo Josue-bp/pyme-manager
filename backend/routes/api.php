@@ -8,7 +8,7 @@ use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ProductoController;
 use App\Http\Controllers\Api\AlmacenController;
 use App\Http\Controllers\Api\MovimientoController;
-
+use App\Http\Controllers\Api\ResumenController;
 Route::get('/ping', function () {
     return response()->json([
         'mensaje' => 'API de PyME Manager funcionando',
@@ -20,6 +20,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+        Route::get('/resumen', ResumenController::class);
 });
 Route::middleware(['auth:sanctum', 'rol:administrador'])->group(function () {
     Route::get('/usuarios', [UserController::class, 'index']);
