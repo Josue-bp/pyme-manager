@@ -21,7 +21,9 @@ class ProductoController extends Controller
                     ->orWhere('sku', 'like', "%{$buscar}%");
             });
         }
-
+        if ($request->boolean('todos')) {
+            return response()->json($consulta->where('activo', true)->get());
+        }
         return response()->json($consulta->paginate(10));
     }
 

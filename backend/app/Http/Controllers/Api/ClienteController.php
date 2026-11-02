@@ -21,7 +21,9 @@ class ClienteController extends Controller
                     ->orWhere('documento', 'like', "%{$buscar}%");
             });
         }
-
+        if ($request->boolean('todos')) {
+            return response()->json($consulta->get());
+        }
         return response()->json($consulta->paginate(10));
     }
 
