@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ProductoController;
+use App\Http\Controllers\Api\AlmacenController;
 
 Route::get('/ping', function () {
     return response()->json([
@@ -22,11 +23,16 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware(['auth:sanctum', 'rol:administrador'])->group(function () {
     Route::get('/usuarios', [UserController::class, 'index']);
     Route::post('/usuarios', [UserController::class, 'store']);
+    Route::post('/almacenes', [AlmacenController::class, 'store']);
+    Route::put('/almacenes/{almacen}', [AlmacenController::class, 'update']);
+    Route::delete('/almacenes/{almacen}', [AlmacenController::class, 'destroy']);
 });
 Route::middleware('auth:sanctum')->group(function () {
     // Cualquier usuario con sesión puede consultar
     Route::get('/categorias', [CategoriaController::class, 'index']);
     Route::get('/categorias/{categoria}', [CategoriaController::class, 'show']);
+    Route::get('/almacenes', [AlmacenController::class, 'index']);
+    Route::get('/almacenes/{almacen}', [AlmacenController::class, 'show']);
 
     // Solo administrador y almacén pueden modificar
     Route::middleware('rol:administrador,almacen')->group(function () {
@@ -52,3 +58,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
     });
 });
+    Route::get('/almacenes', [AlmacenController::class, 'index']);
+    Route::get('/almacenes/{almacen}', [AlmacenController::class, 'show']);
