@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CategoriaController;
 use App\Http\Controllers\Api\ProductoController;
 use App\Http\Controllers\Api\AlmacenController;
+use App\Http\Controllers\Api\MovimientoController;
 
 Route::get('/ping', function () {
     return response()->json([
@@ -33,12 +34,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/categorias/{categoria}', [CategoriaController::class, 'show']);
     Route::get('/almacenes', [AlmacenController::class, 'index']);
     Route::get('/almacenes/{almacen}', [AlmacenController::class, 'show']);
+    Route::get('/movimientos', [MovimientoController::class, 'index']);
+    Route::get('/stock', [MovimientoController::class, 'stock']);
 
     // Solo administrador y almacén pueden modificar
     Route::middleware('rol:administrador,almacen')->group(function () {
         Route::post('/categorias', [CategoriaController::class, 'store']);
         Route::put('/categorias/{categoria}', [CategoriaController::class, 'update']);
         Route::delete('/categorias/{categoria}', [CategoriaController::class, 'destroy']);
+        Route::post('/movimientos', [MovimientoController::class, 'store']);
     });
 });
 Route::middleware('auth:sanctum')->group(function () {
