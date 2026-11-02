@@ -14,10 +14,6 @@ use Illuminate\Validation\ValidationException;
 
 class MovimientoController extends Controller
 {
-    // Stock = entradas - salidas
-    private const STOCK_SQL = "SUM(CASE WHEN movimientos_inventario.tipo = 'entrada' THEN movimientos_inventario.cantidad ELSE 0 END)
-        - SUM(CASE WHEN movimientos_inventario.tipo = 'salida' THEN movimientos_inventario.cantidad ELSE 0 END)";
-
     public function index(Request $request): JsonResponse
     {
         $consulta = MovimientoInventario::with([
@@ -52,7 +48,7 @@ class MovimientoController extends Controller
             Producto::whereKey($datos['producto_id'])->lockForUpdate()->first();
 
             if ($datos['tipo'] === TipoMovimiento::Salida->value) {
-                $disponible = $this->stockDe($datos['producto_id'], $datos['almacen_id']);
+                $disponible = MovimientoInventario::stockDe($datos['producto_id'], $datos['almacen_id']);
 
                 if ($datos['cantidad'] > $disponible) {
                     throw ValidationException::withMessages([
@@ -85,7 +81,7 @@ class MovimientoController extends Controller
             ->selectRaw(
                 'productos.id as producto_id, productos.sku, productos.nombre as producto,
                 productos.stock_minimo, almacenes.id as almacen_id, almacenes.nombre as almacen,
-                ('.self::STOCK_SQL.') as stock'
+                ('.MovimientoInventario::STOCK_SQL.') as stock'
             )
             ->orderBy('productos.nombre')
             ->get()
@@ -105,15 +101,5 @@ class MovimientoController extends Controller
             });
 
         return response()->json($filas);
-    }
-
-    private function stockDe(int|string $productoId, int|string $almacenId): int
-    {
-        $fila = MovimientoInventario::where('producto_id', $productoId)
-            ->where('almacen_id', $almacenId)
-            ->selectRaw('COALESCE('.self::STOCK_SQL.', 0) as stock')
-            ->first();
-
-        return (int) $fila->stock;
     }
 }
