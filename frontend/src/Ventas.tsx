@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { api, MONEDA } from './api'
+import { api,descargar, MONEDA } from './api'
 import FormularioVenta from './FormularioVenta'
 
 type Venta = {
@@ -63,6 +63,7 @@ export default function Ventas() {
             <th>Almacén</th>
             <th>Vendedor</th>
             <th>Total</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -74,6 +75,17 @@ export default function Ventas() {
               <td>{v.almacen.nombre}</td>
               <td>{v.usuario.name}</td>
               <td>{MONEDA} {v.total}</td>
+              <td>
+                <button
+                  onClick={() =>
+                    descargar(`/ventas/${v.id}/comprobante`, `comprobante-${v.numero}.pdf`).catch(
+                      (err) => setError(err instanceof Error ? err.message : 'Error inesperado'),
+                    )
+                  }
+                >
+                  Comprobante
+                </button>
+              </td>
             </tr>
           ))}
           {pagina && pagina.data.length === 0 && (

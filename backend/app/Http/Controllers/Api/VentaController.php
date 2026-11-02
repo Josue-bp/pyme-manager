@@ -116,6 +116,12 @@ class VentaController extends Controller
             201
         );
     
+        return response()->json(
+            $venta->load(['cliente', 'usuario:id,name', 'almacen:id,nombre', 'items.producto:id,sku,nombre']),
+            201
+        );
+    }
+
     public function comprobante(Venta $venta)
     {
         $venta->load(['cliente', 'usuario:id,name', 'almacen:id,nombre', 'items.producto:id,sku,nombre']);
@@ -123,6 +129,7 @@ class VentaController extends Controller
         return Pdf::loadView('comprobante', ['venta' => $venta])
             ->download("comprobante-{$venta->numero}.pdf");
     }
-    }
+}    
+    
 
-}
+    

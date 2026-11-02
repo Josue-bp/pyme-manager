@@ -35,3 +35,22 @@ export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<
   }
   return datos as T
 }
+export async function descargar(ruta: string, nombreArchivo: string): Promise<void> {
+  const token = obtenerToken()
+
+  const respuesta = await fetch(`/api${ruta}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  })
+
+  if (!respuesta.ok) {
+    throw new Error('No se pudo descargar el comprobante')
+  }
+
+  const archivo = await respuesta.blob()
+  const url = URL.createObjectURL(archivo)
+  const enlace = document.createElement('a')
+  enlace.href = url
+  enlace.download = nombreArchivo
+  enlace.click()
+  URL.revokeObjectURL(url)
+}
