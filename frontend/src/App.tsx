@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { api, borrarToken, obtenerToken, type Usuario } from './api'
+import Layout from './Layout'
 import Login from './Login'
+import Pagina from './Pagina'
 import './App.css'
 
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(Boolean(obtenerToken()))
 
-  // Si ya había un token guardado, comprueba que siga siendo válido
   useEffect(() => {
     if (!obtenerToken()) return
 
@@ -26,20 +28,27 @@ function App() {
     }
   }
 
-  if (cargando) return <main className="pantalla"><p>Cargando…</p></main>
+  if (cargando) {
+    return <main className="pantalla"><p>Cargando…</p></main>
+  }
+
+  if (!usuario) {
+    return (
+      <main className="pantalla">
+        <Login alIniciarSesion={setUsuario} />
+      </main>
+    )
+  }
 
   return (
-    <main className="pantalla">
-      {usuario ? (
-        <section className="tarjeta">
-          <h1>Hola, {usuario.name}</h1>
-          <p>Rol: <strong>{usuario.role}</strong></p>
-          <button onClick={cerrarSesion}>Cerrar sesión</button>
-        </section>
-      ) : (
-        <Login alIniciarSesion={setUsuario} />
-      )}
-    </main>
+    <Routes>
+      <Route element={<Layout usuario={usuario} alCerrarSesion={cerrarSesion} />}>
+        <Route path="/inventario" element={<Pagina titulo="Inventario" />} />
+        <Route path="/compras" element={<Pagina titulo="Compras" />} />
+        <Route path="/rrhh" element={<Pagina titulo="RRHH" />} />
+        <Route path="*" element={<Navigate to="/inventario" replace />} />
+      </Route>
+    </Routes>
   )
 }
 
