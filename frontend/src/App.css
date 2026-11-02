@@ -101,3 +101,61 @@
   font-size: 2rem;
   letter-spacing: normal;
 }
+.barra {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.barra input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #8886;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.boton {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.formulario {
+  max-width: 420px;
+  margin-bottom: 24px;
+}
+
+.formulario select {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabla th,
+.tabla td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #8883;
+}
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}

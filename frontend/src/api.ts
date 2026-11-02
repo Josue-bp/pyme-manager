@@ -27,8 +27,10 @@ export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<
   const datos = await respuesta.json().catch(() => ({}))
 
   if (!respuesta.ok) {
-    throw new Error(datos.errors?.email?.[0] ?? datos.message ?? 'Error de la API')
+    const primerError = datos.errors
+      ? (Object.values(datos.errors)[0] as string[])[0]
+      : undefined
+    throw new Error(primerError ?? datos.message ?? 'Error de la API')
   }
-
   return datos as T
 }

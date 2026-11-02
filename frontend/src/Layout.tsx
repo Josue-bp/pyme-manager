@@ -26,7 +26,7 @@ export default function Layout({ usuario, alCerrarSesion }: Props) {
       </aside>
 
       <section className="contenido">
-        <Outlet />
+      <Outlet context={usuario} />
       </section>
     </div>
   )

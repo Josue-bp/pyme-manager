@@ -5,7 +5,7 @@ import Layout from './Layout'
 import Login from './Login'
 import Pagina from './Pagina'
 import './App.css'
-
+import Inventario from './Inventario'
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(Boolean(obtenerToken()))
@@ -40,16 +40,16 @@ function App() {
     )
   }
 
-  return (
-    <Routes>
-      <Route element={<Layout usuario={usuario} alCerrarSesion={cerrarSesion} />}>
-        <Route path="/inventario" element={<Pagina titulo="Inventario" />} />
-        <Route path="/compras" element={<Pagina titulo="Compras" />} />
-        <Route path="/rrhh" element={<Pagina titulo="RRHH" />} />
-        <Route path="*" element={<Navigate to="/inventario" replace />} />
-      </Route>
-    </Routes>
-  )
+return (
+  <Routes>
+    <Route element={<Layout usuario={usuario} alCerrarSesion={cerrarSesion} />}>
+      <Route path="/inventario" element={<Inventario />} />
+      <Route path="/compras" element={<Pagina titulo="Compras" />} />
+      <Route path="/rrhh" element={<Pagina titulo="RRHH" />} />
+      <Route path="*" element={<Navigate to="/inventario" replace />} />
+    </Route>
+  </Routes>
+)
 }
 
 export default App
