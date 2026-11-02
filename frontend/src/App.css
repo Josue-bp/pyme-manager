@@ -207,3 +207,8 @@
 .texto-verde {
   color: #16a34a;
 }
+.barra select {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+}
