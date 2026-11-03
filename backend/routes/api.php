@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ResumenController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VentaController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\ReporteController;
 
 // Rutas públicas
 Route::get('/ping', function () {
@@ -77,5 +78,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/almacenes/{almacen}', [AlmacenController::class, 'destroy']);
 
         Route::delete('/clientes/{cliente}', [ClienteController::class, 'destroy']);
+        Route::get('/reportes/consumo', [ReporteController::class, 'consumo']);
+        Route::get('/reportes/ventas-por-dia', [ReporteController::class, 'ventasPorDia']);
     });
 });
