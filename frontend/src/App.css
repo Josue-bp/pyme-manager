@@ -239,3 +239,16 @@
   margin: 0;
   font-size: 1.2rem;
 }
+.graficos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+.grafico {
+  min-width: 0;
+}
+
+.grafico h2 {
+  margin: 0;
+}
