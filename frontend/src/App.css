@@ -252,3 +252,12 @@
 .grafico h2 {
   margin: 0;
 }
+.formulario .casilla {
+  flex-direction: row;
+  align-items: center;
+}
+
+.casilla input {
+  width: auto;
+  padding: 0;
+}

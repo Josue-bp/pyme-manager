@@ -10,6 +10,7 @@ import Movimientos from './Movimientos'
 import Clientes from './Clientes'
 import Ventas from './Ventas'
 import Reportes from './Reportes'
+import Empleados from './Empleados'
 
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
@@ -50,7 +51,7 @@ return (
     <Route element={<Layout usuario={usuario} alCerrarSesion={cerrarSesion} />}>
       <Route path="/inventario" element={<Inventario />} />
       <Route path="/compras" element={<Pagina titulo="Compras" />} />
-      <Route path="/rrhh" element={<Pagina titulo="RRHH" />} />
+      <Route path="/rrhh" element={<Empleados />} />
       <Route path="*" element={<Navigate to="/inventario" replace />} />
       <Route path="/movimientos" element={<Movimientos />} />
       <Route path="/clientes" element={<Clientes />} />
