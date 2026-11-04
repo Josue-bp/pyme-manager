@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\EmpleadoController;
 use App\Http\Controllers\Api\ProveedorController;
+use App\Http\Controllers\Api\CompraController;
 
 // Rutas públicas
 Route::get('/ping', function () {
@@ -60,6 +61,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/movimientos', [MovimientoController::class, 'store']);
         Route::post('/proveedores', [ProveedorController::class, 'store']);
         Route::put('/proveedores/{proveedor}', [ProveedorController::class, 'update']);
+        Route::get('/compras', [CompraController::class, 'index']);
+        Route::get('/compras/{compra}', [CompraController::class, 'show']);
+        Route::post('/compras', [CompraController::class, 'store']);
     });
 
     // Clientes y ventas: administrador y vendedor
