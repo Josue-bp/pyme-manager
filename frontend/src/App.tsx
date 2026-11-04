@@ -11,7 +11,7 @@ import Clientes from './Clientes'
 import Ventas from './Ventas'
 import Reportes from './Reportes'
 import Empleados from './Empleados'
-
+import Proveedores from './Proveedores'
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(Boolean(obtenerToken()))
@@ -57,6 +57,7 @@ return (
       <Route path="/clientes" element={<Clientes />} />
       <Route path="/ventas" element={<Ventas />} />
       <Route path="/reportes" element={<Reportes />} />
+      <Route path="/proveedores" element={<Proveedores />} />
     </Route>
   </Routes>
 )
