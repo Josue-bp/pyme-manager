@@ -12,6 +12,7 @@ use App\Models\MovimientoInventario;
 use App\Models\Producto;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\Proveedor;
 
 class DatabaseSeeder extends Seeder
 {
@@ -83,7 +84,19 @@ class DatabaseSeeder extends Seeder
             ['Comercial Andina S.A.C.', '20123456789', '014445566'],
             ['María Gómez', '87654321', null],
         ];
+        $proveedores = [
+            ['Distribuidora Papelera S.A.', '20111222333', 'Rosa Díaz', '014001122'],
+            ['TecnoImport E.I.R.L.', '20444555666', 'Luis Ramos', '016003344'],
+        ];
 
+        foreach ($proveedores as [$nombre, $documento, $contacto, $telefono]) {
+            Proveedor::updateOrCreate(['documento' => $documento], [
+                'nombre' => $nombre,
+                'contacto' => $contacto,
+                'telefono' => $telefono,
+                'activo' => true,
+            ]);
+        }
         foreach ($clientes as [$nombre, $documento, $telefono]) {
             Cliente::updateOrCreate(['documento' => $documento], [
                 'nombre' => $nombre,
