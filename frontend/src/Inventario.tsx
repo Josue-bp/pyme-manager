@@ -6,7 +6,24 @@ import FormularioProducto, { type Categoria } from './FormularioProducto'
 import TarjetasResumen from './TarjetasResumen'
 
 // ... types iguales ...
+type Producto = {
+  id: number
+  sku: string
+  nombre: string
+  precio: string
+  stock_minimo: number
+  activo: boolean
+  categoria: Categoria | null
+}
 
+type Pagina = {
+  data: Producto[]
+  current_page: number
+  last_page: number
+  total: number
+}
+
+type FilaStock = { producto_id: number; stock: number }
 export default function Inventario() {
   const usuario = useOutletContext<Usuario>()
   const puedeEditar = usuario.role === 'administrador' || usuario.role === 'almacen'
