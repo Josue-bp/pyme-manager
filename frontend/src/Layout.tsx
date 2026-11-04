@@ -15,7 +15,6 @@ export default function Layout({ usuario, alCerrarSesion }: Props) {
         <nav>
           <NavLink to="/inventario">Inventario</NavLink>
           <NavLink to="/compras">Compras</NavLink>
-          <NavLink to="/rrhh">RRHH</NavLink>
           <NavLink to="/movimientos">Movimientos</NavLink>
           <NavLink to="/clientes">Clientes</NavLink>
           {(usuario.role === 'administrador' || usuario.role === 'vendedor') && (
