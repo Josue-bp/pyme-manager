@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\VentaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ReporteController;
+use App\Http\Controllers\Api\EmpleadoController;
 
 // Rutas públicas
 Route::get('/ping', function () {
@@ -80,5 +81,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/clientes/{cliente}', [ClienteController::class, 'destroy']);
         Route::get('/reportes/consumo', [ReporteController::class, 'consumo']);
         Route::get('/reportes/ventas-por-dia', [ReporteController::class, 'ventasPorDia']);
+                Route::get('/empleados', [EmpleadoController::class, 'index']);
+        Route::get('/empleados/{empleado}', [EmpleadoController::class, 'show']);
+        Route::post('/empleados', [EmpleadoController::class, 'store']);
+        Route::put('/empleados/{empleado}', [EmpleadoController::class, 'update']);
     });
 });
