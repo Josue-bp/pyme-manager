@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { api, borrarToken, obtenerToken, type Usuario } from './api'
 import Layout from './Layout'
 import Login from './Login'
-import Pagina from './Pagina'
 import './App.css'
 import Inventario from './Inventario'
 import Movimientos from './Movimientos'
@@ -12,6 +11,8 @@ import Ventas from './Ventas'
 import Reportes from './Reportes'
 import Empleados from './Empleados'
 import Proveedores from './Proveedores'
+import Compras from './Compras'
+
 function App() {
   const [usuario, setUsuario] = useState<Usuario | null>(null)
   const [cargando, setCargando] = useState(Boolean(obtenerToken()))
@@ -50,7 +51,7 @@ return (
   <Routes>
     <Route element={<Layout usuario={usuario} alCerrarSesion={cerrarSesion} />}>
       <Route path="/inventario" element={<Inventario />} />
-      <Route path="/compras" element={<Pagina titulo="Compras" />} />
+      <Route path="/compras" element={<Compras />} />.
       <Route path="/rrhh" element={<Empleados />} />
       <Route path="*" element={<Navigate to="/inventario" replace />} />
       <Route path="/movimientos" element={<Movimientos />} />
