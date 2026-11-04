@@ -1,27 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { api, type Usuario } from './api'
 import FormularioMovimiento, { type Almacen } from './FormularioMovimiento'
 import FormularioProducto, { type Categoria } from './FormularioProducto'
 import TarjetasResumen from './TarjetasResumen'
-type Producto = {
-  id: number
-  sku: string
-  nombre: string
-  precio: string
-  stock_minimo: number
-  activo: boolean
-  categoria: Categoria | null
-}
 
-type Pagina = {
-  data: Producto[]
-  current_page: number
-  last_page: number
-  total: number
-}
-
-type FilaStock = { producto_id: number; stock: number }
+// ... types iguales ...
 
 export default function Inventario() {
   const usuario = useOutletContext<Usuario>()
@@ -32,31 +16,64 @@ export default function Inventario() {
   const [categorias, setCategorias] = useState<Categoria[]>([])
   const [almacenes, setAlmacenes] = useState<Almacen[]>([])
   const [buscar, setBuscar] = useState('')
+  const [buscarDebounced, setBuscarDebounced] = useState('')
   const [numero, setNumero] = useState(1)
   const [recarga, setRecarga] = useState(0)
+  const [cargando, setCargando] = useState(false)
   const [mostrarForm, setMostrarForm] = useState(false)
   const [productoMovimiento, setProductoMovimiento] = useState<Producto | null>(null)
   const [error, setError] = useState('')
 
+  // --- Debounce de la búsqueda (300ms) ---
   useEffect(() => {
-    api<Pagina>(`/productos?page=${numero}&buscar=${encodeURIComponent(buscar)}`)
-      .then(setPagina)
-      .catch((err) => setError(err instanceof Error ? err.message : 'Error inesperado'))
-  }, [numero, buscar, recarga])
+    const t = setTimeout(() => {
+      setBuscarDebounced(buscar)
+      setNumero(1)
+    }, 300)
+    return () => clearTimeout(t)
+  }, [buscar])
 
+  // --- Productos ---
   useEffect(() => {
-    api<FilaStock[]>('/stock').then(setStock).catch(() => {})
+    setCargando(true)
+    api<Pagina>(`/productos?page=${numero}&buscar=${encodeURIComponent(buscarDebounced)}`)
+      .then((p) => {
+        setPagina(p)
+        // si el backend devuelve otra página (ej. borramos la última), sincronizamos
+        if (p.current_page !== numero) setNumero(p.current_page)
+        setError('')
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : 'Error inesperado'))
+      .finally(() => setCargando(false))
+  }, [numero, buscarDebounced, recarga])
+
+  // --- Stock / catálogos con error visible ---
+  useEffect(() => {
+    api<FilaStock[]>('/stock')
+      .then(setStock)
+      .catch(() => setError('No se pudo cargar el stock'))
   }, [recarga])
 
   useEffect(() => {
-    api<Categoria[]>('/categorias').then(setCategorias).catch(() => {})
-    api<Almacen[]>('/almacenes').then(setAlmacenes).catch(() => {})
+    api<Categoria[]>('/categorias')
+      .then(setCategorias)
+      .catch(() => setError('No se pudieron cargar las categorías'))
+    api<Almacen[]>('/almacenes')
+      .then(setAlmacenes)
+      .catch(() => setError('No se pudieron cargar los almacenes'))
   }, [])
 
+  // --- Stock total por producto, precalculado ---
+  const stockPorProducto = useMemo(() => {
+    const mapa = new Map<number, number>()
+    for (const fila of stock) {
+      mapa.set(fila.producto_id, (mapa.get(fila.producto_id) ?? 0) + fila.stock)
+    }
+    return mapa
+  }, [stock])
+
   function stockTotal(productoId: number) {
-    return stock
-      .filter((fila) => fila.producto_id === productoId)
-      .reduce((suma, fila) => suma + fila.stock, 0)
+    return stockPorProducto.get(productoId) ?? 0
   }
 
   function guardado() {
@@ -69,14 +86,12 @@ export default function Inventario() {
     <>
       <h1>Inventario</h1>
       <TarjetasResumen recarga={recarga} />
+
       <div className="barra">
         <input
           placeholder="Buscar por nombre o SKU…"
           value={buscar}
-          onChange={(e) => {
-            setBuscar(e.target.value)
-            setNumero(1)
-          }}
+          onChange={(e) => setBuscar(e.target.value)}
         />
         {puedeEditar && (
           <button
@@ -90,6 +105,8 @@ export default function Inventario() {
           </button>
         )}
       </div>
+
+      {error && <p className="error">{error}</p>}
 
       {mostrarForm && (
         <FormularioProducto
@@ -108,7 +125,7 @@ export default function Inventario() {
         />
       )}
 
-      {error && <p className="error">{error}</p>}
+      {cargando && <p className="cargando">Cargando productos…</p>}
 
       <table className="tabla">
         <thead>
@@ -127,7 +144,6 @@ export default function Inventario() {
           {pagina?.data.map((p) => {
             const total = stockTotal(p.id)
             const bajo = total < p.stock_minimo
-
             return (
               <tr key={p.id}>
                 <td>{p.nombre}</td>
@@ -157,18 +173,29 @@ export default function Inventario() {
             )
           })}
           {pagina && pagina.data.length === 0 && (
-            <tr><td colSpan={8}>No hay productos.</td></tr>
+            <tr>
+              <td colSpan={8}>No hay productos.</td>
+            </tr>
           )}
         </tbody>
       </table>
 
       {pagina && (
         <div className="paginacion">
-          <button disabled={numero <= 1} onClick={() => setNumero(numero - 1)}>Anterior</button>
-          <span>Página {pagina.current_page} de {pagina.last_page} · {pagina.total} productos</span>
-          <button disabled={numero >= pagina.last_page} onClick={() => setNumero(numero + 1)}>Siguiente</button>
+          <button disabled={numero <= 1} onClick={() => setNumero(numero - 1)}>
+            Anterior
+          </button>
+          <span>
+            Página {pagina.current_page} de {pagina.last_page} · {pagina.total} productos
+          </span>
+          <button
+            disabled={numero >= pagina.last_page}
+            onClick={() => setNumero(numero + 1)}
+          >
+            Siguiente
+          </button>
         </div>
       )}
     </>
   )
-}
+} 
