@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\VentaController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ReporteController;
 use App\Http\Controllers\Api\EmpleadoController;
+use App\Http\Controllers\Api\ProveedorController;
 
 // Rutas públicas
 Route::get('/ping', function () {
@@ -28,7 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/resumen', ResumenController::class);
-
+    Route::get('/proveedores', [ProveedorController::class, 'index']);
+    Route::get('/proveedores/{proveedor}', [ProveedorController::class, 'show']);
     // Consulta: cualquier usuario con sesión
     Route::get('/categorias', [CategoriaController::class, 'index']);
     Route::get('/categorias/{categoria}', [CategoriaController::class, 'show']);
@@ -56,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
 
         Route::post('/movimientos', [MovimientoController::class, 'store']);
+        Route::post('/proveedores', [ProveedorController::class, 'store']);
+        Route::put('/proveedores/{proveedor}', [ProveedorController::class, 'update']);
     });
 
     // Clientes y ventas: administrador y vendedor
