@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { api, MONEDA } from './api'
+import { IconoAlerta, IconoCaja, IconoDinero } from './iconos'
 
 type Resumen = {
   total_productos: number
@@ -24,21 +25,30 @@ export default function TarjetasResumen({ recarga }: { recarga: number }) {
   return (
     <div className="resumen">
       <div className="dato">
-        <span>Productos</span>
-        <strong>{resumen.total_productos}</strong>
-        <small>Total en catálogo</small>
+        <div className="dato-icono azul"><IconoCaja tam={22} /></div>
+        <div className="dato-texto">
+          <span>Productos</span>
+          <strong>{resumen.total_productos}</strong>
+          <small>Total en catálogo</small>
+        </div>
       </div>
 
       <div className="dato">
-        <span>Bajo mínimo</span>
-        <strong className="texto-rojo">{resumen.bajo_minimo}</strong>
-        <small>Productos</small>
+        <div className="dato-icono rojo"><IconoAlerta tam={22} /></div>
+        <div className="dato-texto">
+          <span>Bajo mínimo</span>
+          <strong className={resumen.bajo_minimo > 0 ? 'texto-rojo' : undefined}>{resumen.bajo_minimo}</strong>
+          <small>Productos por reponer</small>
+        </div>
       </div>
 
       <div className="dato">
-        <span>Valor total</span>
-        <strong className="texto-verde">{MONEDA} {valor}</strong>
-        <small>Valor del inventario</small>
+        <div className="dato-icono verde"><IconoDinero tam={22} /></div>
+        <div className="dato-texto">
+          <span>Valor total</span>
+          <strong>{MONEDA} {valor}</strong>
+          <small>Valor del inventario</small>
+        </div>
       </div>
     </div>
   )
